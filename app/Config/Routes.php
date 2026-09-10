@@ -1,8 +1,10 @@
 <?php
 
+use App\Controllers\Home;
+use App\Controllers\User;
+use CodeIgniter\Router\RouteCollection;
 
-$routes->get('/', function () {
-	return view('welcome_message');
-}, ['as' => 'home.index']);
+/** @var RouteCollection $routes */
 
-$routes->post('/users', 'User::index', ['as' => 'users.index']);
+$routes->get('/', [Home::class, 'index'], ['as' => 'home.index']);
+$routes->get('/users', [User::class, 'index'], ['as' => 'users.index']);
