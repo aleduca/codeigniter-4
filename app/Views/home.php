@@ -1,14 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Curso de Codeigniter 4</title>
-</head>
-<body>
-  <div>
-    <h2>Lista de users</h2>
-    <?= $this->include('partials/header') ?>
-  </div>
-</body>
-</html>
+<?= $this->extend('layout') ?>
+
+<?= $this->section('css') ?>
+    <style>
+      body{
+        background-color: red;
+      }
+    </style>
+<?= $this->endSection() ?>
+
+<?= $this->section('content') ?>
+    <h1>Home</h1>
+<?= $this->endSection() ?>

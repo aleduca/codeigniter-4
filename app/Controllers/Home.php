@@ -6,19 +6,6 @@ class Home extends BaseController
 {
 	public function index(): string
 	{
-		$names = [
-			'Ana',
-			'João',
-			'Maria',
-			'Pedro',
-			'Beatriz',
-			'Carlos',
-			'Inês',
-			'Rafael',
-			'Júlia',
-			'Luís',
-		];
-
-		return view('home', ['names' => $names]);
+		return view('home', ['title' => 'Home Page']);
 	}
 }
