@@ -1,1 +1,1 @@
-header
+<img src="<?= base_url() ?>assets/images/logo.png" widt="100" height="100">
