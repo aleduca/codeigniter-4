@@ -1,1 +1,1 @@
-<img src="<?= base_url() ?>assets/images/logo.png" class="w-[100px] h-[100px]">
+<img src="<?= base_url() ?>assets/images/logo.png" width="100" height="100">
