@@ -12,9 +12,9 @@
 
               <div class="space-y-1">
 
-                  <!-- Dashboard -->
+                  <!-- Home -->
                   <a
-                      href="#"
+                      href="<?= url_to('home.index') ?>"
                       class="flex items-center gap-3 rounded-lg bg-indigo-600/10 px-3 py-2.5 text-sm font-medium text-indigo-400"
                   >
 
@@ -33,40 +33,14 @@
                           />
                       </svg>
 
-                      Dashboard
-
-                  </a>
-
-
-                  <!-- Projetos -->
-                  <a
-                      href="#"
-                      class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-zinc-400 transition hover:bg-zinc-800 hover:text-zinc-100"
-                  >
-
-                      <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-5 w-5"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                      >
-                          <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="1.8"
-                              d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0H4"
-                          />
-                      </svg>
-
-                      Projetos
+                      Home
 
                   </a>
 
 
                   <!-- Usuários -->
                   <a
-                      href="#"
+                      href="<?= url_to('user.show', 'alexandre', 20) ?>"
                       class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-zinc-400 transition hover:bg-zinc-800 hover:text-zinc-100"
                   >
 
