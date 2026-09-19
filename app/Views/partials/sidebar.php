@@ -40,7 +40,7 @@
 
                   <!-- Usuários -->
                   <a
-                      href="<?= url_to('user.show', 'alexandre', 20) ?>"
+                      href="<?= url_to('users.index') ?>"
                       class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-zinc-400 transition hover:bg-zinc-800 hover:text-zinc-100"
                   >
 

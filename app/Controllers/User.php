@@ -8,9 +8,4 @@ class User extends BaseController
 	{
 		return view('users');
 	}
-
-	public function show(string $user, int $id)
-	{
-		dd($user, $id);
-	}
 }
