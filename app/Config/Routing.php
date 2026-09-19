@@ -11,7 +11,6 @@
 
 namespace Config;
 
-use App\Controllers\Errors;
 use CodeIgniter\Config\Routing as BaseRouting;
 
 /**
@@ -85,7 +84,7 @@ class Routing extends BaseRouting
 	 * Example:
 	 *  public $override404 = 'App\Errors::show404';
 	 */
-	public ?string $override404 = Errors::class . '::show404';
+	public ?string $override404 = null;
 
 	/**
 	 * If TRUE, the system will attempt to match the URI against
