@@ -10,7 +10,8 @@
     <?php foreach ($users as $user): ?>
         <div class="flex items-center justify-between px-6 py-5 transition hover:bg-gray-800/50">
             <span class="text-sm font-medium text-white">
-                <?= $user->fullName() ?>
+                <?= $user->fullName ?> -
+                <?= $user->email ?>
             </span>
 
             <span class="text-xs text-gray-500">
