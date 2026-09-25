@@ -1,4 +1,4 @@
-  <aside class="hidden w-64 shrink-0 border-r border-zinc-800 bg-zinc-900 lg:block">
+  <aside class="hidden w-50 shrink-0 border-r border-zinc-800 bg-zinc-900 lg:block">
 
       <nav class="flex h-full flex-col p-4">
 
