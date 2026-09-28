@@ -59,4 +59,20 @@ class User extends BaseController
 
 		return redirect()->back()->withInput();
 	}
+
+	public function destroy(int $id)
+	{
+		$user = model(UserModel::class);
+		$session = session();
+
+		if ($user->delete($id)) {
+			$session->setFlashdata('success', 'Usuário deletado com sucesso');
+
+			return redirect()->back();
+		}
+
+		$session->setFlashdata('error', 'Ocorreu um erro ao deletar o usuário');
+
+		return redirect()->back()->withInput();
+	}
 }

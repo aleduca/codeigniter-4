@@ -2,7 +2,22 @@
 
 <?= $this->section('content') ?>
     <div class="p-6">
+
     <div class="mx-auto max-w-2xl overflow-hidden rounded-xl border border-gray-800 bg-zinc-900">
+
+    <div class="mb-3 mt-4">
+        <?php if ($success = session()->getFlashdata('success')): ?>
+            <div class="mb-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300 text-center">
+                <?= esc($success) ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if ($error = session()->getFlashdata('error')): ?>
+            <div class="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300 text-center">
+                <?= esc($error) ?>
+            </div>
+        <?php endif; ?>
+    </div>
 
     <h2 class="text-3xl p-3 text-center mt-3">Lista de Users</h2>
 
@@ -19,8 +34,12 @@
                 <?= $user->email ?>
             </span>
 
-            <span class="text-xs text-gray-500">
-                <a href="<?= url_to('users.edit', $user->id) ?>" class="bg-indigo-700 text-white p-2 rounded cursor-pointer">Edit</a>
+            <span class="text-xs text-gray-500 flex">
+                <a href="<?= url_to('users.edit', $user->id) ?>" class="bg-indigo-700 text-white p-2 rounded cursor-pointer mr-2">Edit</a>
+                <form action="<?= url_to('users.delete', $user->id) ?>" method="post">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="bg-red-700 text-white p-2 rounded cursor-pointer">Delete</button>
+                </form>
             </span>
         </div>
     <?php endforeach ?>

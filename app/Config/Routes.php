@@ -13,5 +13,6 @@ $routes->get('/user/create', [User::class, 'create'], ['as' => 'users.create']);
 $routes->post('/user', [User::class, 'store'], ['as' => 'users.store']);
 $routes->get('/user/edit/(:num)', [User::class, 'edit'], ['as' => 'users.edit']);
 $routes->put('/user/(:num)', [User::class, 'update'], ['as' => 'users.update']);
+$routes->delete('/user/(:num)', [User::class, 'destroy'], ['as' => 'users.delete']);
 
 $routes->set404Override(Errors::class . '::show404');
