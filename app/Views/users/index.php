@@ -20,7 +20,7 @@
             </span>
 
             <span class="text-xs text-gray-500">
-                <?= $user->id ?>
+                <a href="<?= url_to('users.edit', $user->id) ?>" class="bg-indigo-700 text-white p-2 rounded cursor-pointer">Edit</a>
             </span>
         </div>
     <?php endforeach ?>

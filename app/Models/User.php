@@ -56,6 +56,12 @@ class User extends Model
 			return $data;
 		}
 
+		if (empty($data['data']['password'])) {
+			unset($data['data']['password']);
+
+			return $data;
+		}
+
 		$data['data']['password'] = password_hash($data['data']['password'], PASSWORD_DEFAULT);
 
 		return $data;

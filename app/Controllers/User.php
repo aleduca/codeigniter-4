@@ -34,4 +34,29 @@ class User extends BaseController
 
 		return redirect()->back()->withInput();
 	}
+
+	public function edit(int $id)
+	{
+		$user = model(UserModel::class)->find($id);
+
+		return view('users/edit', ['user' => $user]);
+	}
+
+	public function update(int $id)
+	{
+		$model = model(UserModel::class);
+		$session = session();
+
+		$data = $this->request->getPost();
+
+		if ($model->update($id, $data)) {
+			$session->setFlashdata('success', 'Usuário atualizado com sucesso');
+
+			return redirect()->back();
+		}
+
+		$session->setFlashdata('error', 'Ocorreu um erro ao atualizar o usuário');
+
+		return redirect()->back()->withInput();
+	}
 }
