@@ -37,6 +37,7 @@
             <span class="text-xs text-gray-500 flex">
                 <a href="<?= url_to('users.edit', $user->id) ?>" class="bg-indigo-700 text-white p-2 rounded cursor-pointer mr-2">Edit</a>
                 <form action="<?= url_to('users.delete', $user->id) ?>" method="post">
+                       <?= csrf_field() ?>
                     <input type="hidden" name="_method" value="DELETE">
                     <button type="submit" class="bg-red-700 text-white p-2 rounded cursor-pointer">Delete</button>
                 </form>

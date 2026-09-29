@@ -34,6 +34,7 @@
 
             <form action="<?= url_to('users.update', $user->id) ?>" method="POST" class="space-y-5">
 
+                <?= csrf_field() ?>
               <input type="hidden" name="_method" value="PUT">
                 <!-- Firstname -->
                 <div>

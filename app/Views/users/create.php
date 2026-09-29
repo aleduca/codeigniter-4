@@ -34,6 +34,7 @@
 
             <form action="<?= url_to('users.store') ?>" method="POST" class="space-y-5">
 
+               <?= csrf_field() ?>
                 <!-- Firstname -->
                 <div>
                     <label
