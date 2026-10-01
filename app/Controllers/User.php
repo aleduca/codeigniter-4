@@ -15,7 +15,9 @@ class User extends BaseController
 
 	public function create()
 	{
-		return view('users/create');
+		return view('users/create', [
+			'validated' => session()->getFlashdata('validated') ?? [],
+		]);
 	}
 
 	public function store()
@@ -23,7 +25,22 @@ class User extends BaseController
 		$user = model(UserModel::class);
 		$data = $this->request->getPost();
 		$session = session();
-		$inserted = $user->insert($data);
+
+		$validated = $this->validateData($data, [
+			'firstName' => 'required|max_length[30]',
+			'lastName' => 'required|max_length[30]',
+			'email' => 'required|valid_email|is_unique[users.email]',
+			'password' => 'required|max_length[10]|min_length[3]',
+		]);
+
+		if (!$validated) {
+			$session->setFlashdata('validated', $this->validator->getErrors());
+
+			return redirect()->back()->withInput();
+		}
+
+
+		$inserted = $user->insert($this->validator->getValidated());
 		if ($inserted) {
 			$session->setFlashdata('success', 'Usuário cadastrado com sucesso');
 
@@ -39,7 +56,12 @@ class User extends BaseController
 	{
 		$user = model(UserModel::class)->find($id);
 
-		return view('users/edit', ['user' => $user]);
+		return view(
+			'users/edit',
+			[
+				'user' => $user,
+				'validated' => session()->getFlashdata('validated') ?? [], ]
+		);
 	}
 
 	public function update(int $id)
@@ -49,7 +71,21 @@ class User extends BaseController
 
 		$data = $this->request->getPost();
 
-		if ($model->update($id, $data)) {
+		$validated = $this->validateData($data, [
+			'firstName' => 'required|max_length[30]',
+			'lastName' => 'required|max_length[30]',
+			'email' => "required|valid_email|is_unique[users.email,id,{$id}]",
+			'password' => 'permit_empty|max_length[10]|min_length[3]',
+		]);
+
+		if (!$validated) {
+			$session->setFlashdata('validated', $this->validator->getErrors());
+
+			return redirect()->back()->withInput();
+		}
+
+
+		if ($model->update($id, $this->validator->getValidated())) {
 			$session->setFlashdata('success', 'Usuário atualizado com sucesso');
 
 			return redirect()->back();
