@@ -15,16 +15,13 @@ class User extends BaseController
 
 	public function create()
 	{
-		return view('users/create', [
-			'validated' => session()->getFlashdata('validated') ?? [],
-		]);
+		return view('users/create');
 	}
 
 	public function store()
 	{
 		$user = model(UserModel::class);
 		$data = $this->request->getPost();
-		$session = session();
 
 		$validated = $this->validateData($data, [
 			'firstName' => 'required|max_length[30]',
@@ -34,22 +31,14 @@ class User extends BaseController
 		]);
 
 		if (!$validated) {
-			$session->setFlashdata('validated', $this->validator->getErrors());
-
-			return redirect()->back()->withInput();
+			return redirect()->back()->withInput()->with('validated', $this->validator->getErrors());
 		}
-
 
 		$inserted = $user->insert($this->validator->getValidated());
-		if ($inserted) {
-			$session->setFlashdata('success', 'Usuário cadastrado com sucesso');
 
-			return redirect()->back();
-		}
-
-		$session->setFlashdata('error', 'Ocorreu um erro ao cadastrar o usuário');
-
-		return redirect()->back()->withInput();
+		return ($inserted) ?
+				redirect()->back()->with('success', 'Usuário cadastrado com sucesso') :
+				redirect()->back()->withInput()->with('error', 'Ocorreu um erro ao cadastrar o usuário');
 	}
 
 	public function edit(int $id)
@@ -60,14 +49,13 @@ class User extends BaseController
 			'users/edit',
 			[
 				'user' => $user,
-				'validated' => session()->getFlashdata('validated') ?? [], ]
+			]
 		);
 	}
 
 	public function update(int $id)
 	{
 		$model = model(UserModel::class);
-		$session = session();
 
 		$data = $this->request->getPost();
 
@@ -79,21 +67,13 @@ class User extends BaseController
 		]);
 
 		if (!$validated) {
-			$session->setFlashdata('validated', $this->validator->getErrors());
-
-			return redirect()->back()->withInput();
+			return redirect()->back()->withInput()->with('validated', $this->validator->getErrors());
 		}
 
 
-		if ($model->update($id, $this->validator->getValidated())) {
-			$session->setFlashdata('success', 'Usuário atualizado com sucesso');
-
-			return redirect()->back();
-		}
-
-		$session->setFlashdata('error', 'Ocorreu um erro ao atualizar o usuário');
-
-		return redirect()->back()->withInput();
+		return ($model->update($id, $this->validator->getValidated())) ?
+			redirect()->back()->with('success', 'Usuário atualizado com sucesso') :
+			redirect()->back()->withInput()->with('error', 'Ocorreu um erro ao atualizar o usuário');
 	}
 
 	public function destroy(int $id)

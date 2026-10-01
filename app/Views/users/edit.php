@@ -53,9 +53,7 @@
                         placeholder="Digite o primeiro nome"
                         class="w-full rounded-lg border border-gray-800 bg-zinc-950 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none transition focus:border-gray-600 focus:ring-1 focus:ring-gray-600"
                     >
-                    <?php if (!empty($validated['firstName'])): ?>
-                        <p class="mt-1 text-sm text-red-300"><?= esc($validated['firstName']) ?></p>
-                    <?php endif; ?>
+                    <?= validate('firstName') ?>
                 </div>
 
                 <!-- Lastname -->
@@ -75,9 +73,7 @@
                         placeholder="Digite o sobrenome"
                         class="w-full rounded-lg border border-gray-800 bg-zinc-950 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none transition focus:border-gray-600 focus:ring-1 focus:ring-gray-600"
                     >
-                      <?php if (!empty($validated['lastName'])): ?>
-                        <p class="mt-1 text-sm text-red-300"><?= esc($validated['lastName']) ?></p>
-                    <?php endif; ?>
+                    <?= validate('lastName') ?>
                 </div>
 
                 <!-- Email -->
@@ -97,9 +93,7 @@
                         placeholder="Digite o e-mail"
                         class="w-full rounded-lg border border-gray-800 bg-zinc-950 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none transition focus:border-gray-600 focus:ring-1 focus:ring-gray-600"
                     >
-                    <?php if (!empty($validated['email'])): ?>
-                        <p class="mt-1 text-sm text-red-300"><?= esc($validated['email']) ?></p>
-                    <?php endif; ?>
+                      <?= validate('email') ?>
                 </div>
 
                 <!-- Password -->
@@ -118,9 +112,7 @@
                         placeholder="Digite a senha"
                         class="w-full rounded-lg border border-gray-800 bg-zinc-950 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none transition focus:border-gray-600 focus:ring-1 focus:ring-gray-600"
                     >
-                    <?php if (!empty($validated['password'])): ?>
-                        <p class="mt-1 text-sm text-red-300"><?= esc($validated['password']) ?></p>
-                    <?php endif; ?>
+                        <?= validate('password') ?>
                 </div>
 
                 <!-- Button -->
