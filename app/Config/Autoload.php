@@ -89,6 +89,6 @@ class Autoload extends AutoloadConfig
 	 * @var list<string>
 	 */
 	public $helpers = [
-		'validate',
+		'flash_messages',
 	];
 }

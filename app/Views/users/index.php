@@ -22,7 +22,10 @@
     <h2 class="text-3xl p-3 text-center mt-3">Lista de Users</h2>
 
     <div class="flex justify-end mr-3 mb-3">
-        <a href="<?= url_to('users.create') ?>" class="bg-indigo-600 text-white p-2 rounded cursor-pointer">New User</a>
+        <!-- <a href="<?= url_to('users.create') ?>" class="bg-indigo-600 text-white p-2 rounded cursor-pointer">New User</a> -->
+        <?= anchor(url_to('users.create'), 'New User', [
+        	'class' => 'bg-indigo-600 text-white p-2 rounded cursor-pointer',
+        ]) ?>
     </div>
 
     <div class="divide-y divide-gray-800">

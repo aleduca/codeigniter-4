@@ -19,17 +19,9 @@
         <div class="rounded-xl border border-gray-800 bg-zinc-900 p-8">
 
             <div class="mb-3">
-                <?php if ($success = session()->getFlashdata('success')): ?>
-                    <div class="mb-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300 text-center">
-                        <?= esc($success) ?>
-                    </div>
-                <?php endif; ?>
+                <?= redirected_with('success', 'mb-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300 text-center') ?>
+                <?= redirected_with('error', 'mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300 text-center') ?>
 
-                <?php if ($error = session()->getFlashdata('error')): ?>
-                    <div class="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300 text-center">
-                        <?= esc($error) ?>
-                    </div>
-                <?php endif; ?>
             </div>
 
             <form action="<?= url_to('users.store') ?>" method="POST" class="space-y-5">
