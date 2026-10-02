@@ -15,9 +15,7 @@ class User extends BaseController
 
 	public function create()
 	{
-		return view('users/create', [
-			'validated' => session()->getFlashdata('validated') ?? [],
-		]);
+		return view('users/create');
 	}
 
 	public function store()
