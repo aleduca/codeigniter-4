@@ -1,9 +1,9 @@
 <?php
 
 if (!function_exists('validate')) {
-	function validate($key)
+	function validate($key, $session = null)
 	{
-		$session = session()->getFlashdata('validated') ?? [];
+		$session ??= session()->getFlashdata('validated') ?? [];
 
 		$message = '';
 		if (!empty($session)) {
