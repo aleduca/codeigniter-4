@@ -66,7 +66,6 @@ class User extends BaseController
 			return redirect()->back()->withInput()->with('validated', $this->validator->getErrors());
 		}
 
-
 		return ($model->update($id, $this->validator->getValidated())) ?
 			redirect()->back()->with('success', 'Usuário atualizado com sucesso') :
 			redirect()->back()->withInput()->with('error', 'Ocorreu um erro ao atualizar o usuário');

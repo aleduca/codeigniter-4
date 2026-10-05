@@ -48,7 +48,7 @@
 
                 <div class="hidden text-right sm:block">
                     <p class="text-sm font-medium text-zinc-100">
-                        Alexandre
+                        <?= welcome_user() ?>
                     </p>
 
                     <p class="text-xs text-zinc-500">

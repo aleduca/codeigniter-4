@@ -8,6 +8,8 @@ class Home extends BaseController
 	{
 		// helper('date');
 
+		// dd(session()->get());
+
 		return view('home', ['title' => 'Home Page']);
 	}
 }
