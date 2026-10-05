@@ -6,6 +6,11 @@ use App\Models\User as UserModel;
 
 class User extends BaseController
 {
+	public function __construct()
+	{
+		$this->validator = service('validation');
+	}
+
 	public function index()
 	{
 		$users = model(UserModel::class)->findAll();
@@ -23,12 +28,7 @@ class User extends BaseController
 		$user = model(UserModel::class);
 		$data = $this->request->getPost();
 
-		$validated = $this->validateData($data, [
-			'firstName' => 'required|max_length[30]',
-			'lastName' => 'required|max_length[30]',
-			'email' => 'required|valid_email|is_unique[users.email]',
-			'password' => 'required|max_length[10]|min_length[3]',
-		]);
+		$validated = $this->validator->run($data, 'user_create');
 
 		if (!$validated) {
 			return redirect()->back()->withInput()->with('validated', $this->validator->getErrors());
@@ -59,12 +59,8 @@ class User extends BaseController
 
 		$data = $this->request->getPost();
 
-		$validated = $this->validateData($data, [
-			'firstName' => 'required|max_length[30]',
-			'lastName' => 'required|max_length[30]',
-			'email' => "required|valid_email|is_unique[users.email,id,{$id}]",
-			'password' => 'permit_empty|max_length[10]|min_length[3]',
-		]);
+		$data['id'] = $id;
+		$validated = $this->validator->run($data, 'user_update');
 
 		if (!$validated) {
 			return redirect()->back()->withInput()->with('validated', $this->validator->getErrors());
