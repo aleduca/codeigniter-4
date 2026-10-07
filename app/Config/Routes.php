@@ -10,13 +10,13 @@ use CodeIgniter\Router\RouteCollection;
 
 $routes->get('/', [Home::class, 'index'], ['as' => 'home.index']);
 $routes->get('/users', [User::class, 'index'], ['as' => 'users.index']);
-$routes->get('/user/create', [User::class, 'create'], ['as' => 'users.create']);
-$routes->post('/user', [User::class, 'store'], ['as' => 'users.store']);
-$routes->get('/user/edit/(:num)', [User::class, 'edit'], ['as' => 'users.edit']);
-$routes->put('/user/(:num)', [User::class, 'update'], ['as' => 'users.update']);
-$routes->delete('/user/(:num)', [User::class, 'destroy'], ['as' => 'users.delete']);
+$routes->get('/user/create', [User::class, 'create'], ['as' => 'users.create', 'filter' => ['auth']]);
+$routes->post('/user', [User::class, 'store'], ['as' => 'users.store', 'filter' => ['auth']]);
+$routes->get('/user/edit/(:num)', [User::class, 'edit'], ['as' => 'users.edit', 'filter' => ['auth']]);
+$routes->put('/user/(:num)', [User::class, 'update'], ['as' => 'users.update', 'filter' => ['auth']]);
+$routes->delete('/user/(:num)', [User::class, 'destroy'], ['as' => 'users.delete', 'filter' => ['auth']]);
 $routes->get('/login', [Auth::class, 'index'], ['as' => 'auth.index']);
 $routes->post('/login', [Auth::class, 'store'], ['as' => 'auth.store']);
-$routes->delete('/login', [Auth::class, 'destroy'], ['as' => 'auth.delete']);
+$routes->delete('/logout', [Auth::class, 'destroy'], ['as' => 'auth.delete', 'filter' => ['auth']]);
 
 $routes->set404Override(Errors::class . '::show404');
