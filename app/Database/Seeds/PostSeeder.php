@@ -11,7 +11,7 @@ class PostSeeder extends Seeder
 		$faker = \Faker\Factory::create();
 		$data = [];
 
-		for ($i = 0; $i < 10; $i++) {
+		for ($i = 0; $i < 30; $i++) {
 			$data[] = [
 				'title' => $faker->sentence(),
 				'slug' => $faker->slug(),

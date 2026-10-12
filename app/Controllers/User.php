@@ -13,9 +13,14 @@ class User extends BaseController
 
 	public function index()
 	{
-		$users = model(UserModel::class)->findAll();
+		$model = model(UserModel::class);
 
-		return view('users/index', ['users' => $users]);
+		$data = [
+			'users' => $model->paginate(10),
+			'pager' => $model->pager,
+		];
+
+		return view('users/index', $data);
 	}
 
 	public function create()

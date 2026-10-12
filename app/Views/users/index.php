@@ -47,6 +47,8 @@
         </div>
     <?php endforeach ?>
 
+    <?= $pager->links() ?>
+
     </div>
 
 </div>
