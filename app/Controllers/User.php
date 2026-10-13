@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\User as UserModel;
+use CodeIgniter\Queue\Handlers\DatabaseHandler;
 
 class User extends BaseController
 {
@@ -41,9 +42,14 @@ class User extends BaseController
 
 		$inserted = $user->insert($this->validator->getValidated());
 
-		return ($inserted) ?
-				redirect()->back()->with('success', 'Usuário cadastrado com sucesso') :
-				redirect()->back()->withInput()->with('error', 'Ocorreu um erro ao cadastrar o usuário');
+		if ($inserted) {
+			// send email - queues(filas) - jobs(tarefas)
+			/** @var DatabaseHandler $queue */
+			$queue = service('queue');
+			$queue->push('emails', 'email', ['array' => 'parameters']);
+			redirect()->back()->with('success', 'Usuário cadastrado com sucesso');
+		}
+		redirect()->back()->withInput()->with('error', 'Ocorreu um erro ao cadastrar o usuário');
 	}
 
 	public function edit(int $id)
