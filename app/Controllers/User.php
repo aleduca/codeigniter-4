@@ -40,15 +40,15 @@ class User extends BaseController
 			return redirect()->back()->withInput()->with('validated', $this->validator->getErrors());
 		}
 
-		$inserted = $user->insert($this->validator->getValidated());
+		// $inserted = $user->insert($this->validator->getValidated());
 
-		if ($inserted) {
-			// send email - queues(filas) - jobs(tarefas)
-			/** @var DatabaseHandler $queue */
-			$queue = service('queue');
-			$queue->push('emails', 'email', ['array' => 'parameters']);
-			redirect()->back()->with('success', 'Usuário cadastrado com sucesso');
-		}
+		// if ($inserted) {
+		// send email - queues(filas) - jobs(tarefas)
+		/** @var DatabaseHandler $queue */
+		$queue = service('queue');
+		$queue->push('emails', 'email', ['user' => $data]);
+		redirect()->back()->with('success', 'Usuário cadastrado com sucesso');
+		// }
 		redirect()->back()->withInput()->with('error', 'Ocorreu um erro ao cadastrar o usuário');
 	}
 
