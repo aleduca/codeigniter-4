@@ -16,7 +16,7 @@ class EmailJob extends BaseJob
 		$user = $this->data['user'];
 		$email->setMailType('html');
 		$email->setFrom('meuemail@email.com.br', 'Alexandre');
-		$email->setTo($user['email'], $user['firstName']);
+		$email->setTo($user['email']);
 
 		$email->setSubject('Cadastro no site clube full-stack');
 		$email->setMessage(view('mail/user_create', ['user' => $user]));
