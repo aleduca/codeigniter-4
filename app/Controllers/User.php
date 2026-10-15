@@ -17,7 +17,7 @@ class User extends BaseController
 		$model = model(UserModel::class);
 
 		$data = [
-			'users' => $model->paginate(10),
+			'users' => $model->paginate(5),
 			'pager' => $model->pager,
 		];
 
@@ -40,15 +40,14 @@ class User extends BaseController
 			return redirect()->back()->withInput()->with('validated', $this->validator->getErrors());
 		}
 
-		// $inserted = $user->insert($this->validator->getValidated());
+		$inserted = $user->insert($this->validator->getValidated());
 
-		// if ($inserted) {
-		// send email - queues(filas) - jobs(tarefas)
-		/** @var DatabaseHandler $queue */
-		$queue = service('queue');
-		$queue->push('emails', 'email', ['user' => $data]);
-		redirect()->back()->with('success', 'Usuário cadastrado com sucesso');
-		// }
+		if ($inserted) {
+			/** @var DatabaseHandler $queue */
+			$queue = service('queue');
+			$queue->push('emails', 'email', ['user' => $data]);
+			redirect()->back()->with('success', 'Usuário cadastrado com sucesso');
+		}
 		redirect()->back()->withInput()->with('error', 'Ocorreu um erro ao cadastrar o usuário');
 	}
 
