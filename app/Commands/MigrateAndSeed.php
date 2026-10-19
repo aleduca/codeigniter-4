@@ -71,6 +71,7 @@ class MigrateAndSeed extends BaseCommand
 
 		// Executa o comando de migration padrão do framework
 		command('migrate:refresh');
+		command('migrate --all');
 
 		CLI::write('Migrations finalizadas com sucesso!', 'green');
 		CLI::write('Iniciando processo de Seeding...', 'yellow');

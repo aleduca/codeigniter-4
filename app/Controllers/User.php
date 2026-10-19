@@ -16,6 +16,25 @@ class User extends BaseController
 	{
 		$model = model(UserModel::class);
 
+		// Query Builder somente quando chamo o método table() - o db é a conexão - IMPORTANTE !!!
+		// try {
+		// 	$model->db->transException(true)->transBegin();
+
+		// 	$model->delete(1);
+
+		// 	$model->db->table('users')->update([
+		// 		'firstName' => 'João',
+		// 	], 'id=4');
+
+		// 	$model->db->transComplete();
+		// } catch (\Throwable $th) {
+		// 	throw $th;
+		// }
+
+		if ($model->db->transStatus() === false) {
+			log_message('info', 'Ocorreu um erro ao executar uma query na transaction');
+		}
+
 		$data = [
 			'users' => $model->paginate(5),
 			'pager' => $model->pager,
