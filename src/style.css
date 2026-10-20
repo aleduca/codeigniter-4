@@ -1,0 +1,6 @@
+@import "tailwindcss";
+@source "../app/Views";
+
+body {
+    font-family: 'Kode Mono';
+}
