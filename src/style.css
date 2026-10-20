@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @source "../app/Views";
 
+[x-cloak] {
+    display: none !important;
+}
+
 body {
     font-family: 'Kode Mono';
 }

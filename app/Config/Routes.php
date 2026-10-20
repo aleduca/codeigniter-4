@@ -3,12 +3,15 @@
 use App\Controllers\Auth;
 use App\Controllers\Errors;
 use App\Controllers\Home;
+use App\Controllers\Post;
 use App\Controllers\User;
 use CodeIgniter\Router\RouteCollection;
 
 /** @var RouteCollection $routes */
 
 $routes->get('/', [Home::class, 'index'], ['as' => 'home.index']);
+$routes->get('/posts', [Post::class, 'index'], ['as' => 'posts.index']);
+$routes->delete('/posts/(:num)', [Post::class, 'destroy'], ['as' => 'posts.delete']);
 $routes->get('/users', [User::class, 'index'], ['as' => 'users.index']);
 
 $routes->group('user', ['filter' => ['auth']], function ($routes) {
