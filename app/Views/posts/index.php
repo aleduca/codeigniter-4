@@ -20,17 +20,8 @@
     <div class="mx-auto max-w-4xl overflow-hidden rounded-xl border border-gray-800 bg-zinc-900">
 
         <div class="mb-3 mt-4 px-6">
-            <?php if ($success = session()->getFlashdata('success')): ?>
-                <div class="mb-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300 text-center">
-                    <?= esc($success) ?>
-                </div>
-            <?php endif; ?>
-
-            <?php if ($error = session()->getFlashdata('error')): ?>
-                <div class="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300 text-center">
-                    <?= esc($error) ?>
-                </div>
-            <?php endif; ?>
+             <?= redirected_with('success', 'mb-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300 text-center') ?>
+            <?= redirected_with('error', 'mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300 text-center') ?>
         </div>
 
         <h2 class="text-3xl p-3 text-center mt-3 font-bold text-white">Lista de Posts</h2>
@@ -84,7 +75,7 @@
             <?php endif; ?>
 
             <div class="p-4">
-
+                <?= $pager->links() ?>
             </div>
 
         </div>

@@ -8,7 +8,7 @@ export default defineConfig({
   publicDir: false,
   build: {
     outDir: 'public/dist',
-    emptyOutDir: true,
+    emptyOutDir: false,
     rollupOptions: {
       input: 'src/index.js',
       watch:{
