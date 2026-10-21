@@ -7,8 +7,8 @@
 
     <title><?= $title ?? 'CodeIgniter 4' ?></title>
 
-    <script type="module" src="<?= base_url('dist/js/app.js') ?>"></script>
-    <link rel="stylesheet" href="<?= base_url() ?>dist/css/app.css">
+    <script type="module" src="<?= base_url('dist/main.js') ?>"></script>
+    <link rel="stylesheet" href="<?= base_url('dist/style.css') ?>">
 </head>
 
 <body class="min-h-screen bg-zinc-950 text-zinc-100">

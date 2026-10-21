@@ -84,7 +84,7 @@
             <?php endif; ?>
 
             <div class="p-4">
-                <?= $pager->links() ?>
+
             </div>
 
         </div>
