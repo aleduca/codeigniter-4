@@ -11,6 +11,9 @@ use CodeIgniter\Router\RouteCollection;
 
 $routes->get('/', [Home::class, 'index'], ['as' => 'home.index']);
 $routes->get('/posts', [Post::class, 'index'], ['as' => 'posts.index']);
+$routes->get('/posts/(:num)/quick-edit', [Post::class, 'quickEdit'], ['as' => 'posts.quick-edit']);
+$routes->get('/posts/(:num)/row', [Post::class, 'postRow'], ['as' => 'posts.row']);
+$routes->patch('/posts/(:num)/quick-edit', [Post::class, 'quickUpdate'], ['as' => 'posts.quick-update']);
 $routes->delete('/posts/(:num)', [Post::class, 'destroy'], ['as' => 'posts.delete']);
 $routes->get('/users', [User::class, 'index'], ['as' => 'users.index']);
 

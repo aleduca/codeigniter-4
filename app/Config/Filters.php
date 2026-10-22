@@ -101,6 +101,7 @@ class Filters extends BaseFilters
 		'POST' => ['csrf'],
 		'PUT' => ['csrf'],
 		'DELETE' => ['csrf'],
+		'PATCH' => ['csrf'],
 	];
 
 	/**

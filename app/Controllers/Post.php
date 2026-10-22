@@ -22,6 +22,56 @@ class Post extends BaseController
 		return view('posts/index', $data);
 	}
 
+	public function quickEdit(int $id)
+	{
+		$model = model(PostModel::class);
+		$post  = $model->find($id);
+
+		if (! $post) {
+			return $this->response->setStatusCode(404)->setBody('Post não encontrado.');
+		}
+
+		return view('posts/partials/quick_edit_form', ['post' => $post]);
+	}
+
+	public function postRow(int $id)
+	{
+		$model = model(PostModel::class);
+		$post  = $model->select('posts.*, users.firstName, users.lastName')
+			->join('users', 'users.id = posts.user_id', 'left')
+			->find($id);
+
+		if (! $post) {
+			return $this->response->setStatusCode(404)->setBody('Post não encontrado.');
+		}
+
+		return view('posts/partials/post_row', ['post' => $post]);
+	}
+
+	public function quickUpdate(int $id)
+	{
+		$model = model(PostModel::class);
+		$post  = $model->find($id);
+
+		if (! $post) {
+			return $this->response->setStatusCode(404)->setBody('Post não encontrado.');
+		}
+
+		$data = [
+			'title'   => $this->request->getRawInputVar('title'),
+			'content' => $this->request->getRawInputVar('content'),
+		];
+
+		$model->update($id, $data);
+
+		// Recarrega o post atualizado
+		$post = $model->select('posts.*, users.firstName, users.lastName')
+			->join('users', 'users.id = posts.user_id', 'left')
+			->find($id);
+
+		return view('posts/partials/post_row', ['post' => $post]);
+	}
+
 	public function destroy(int $id)
 	{
 		$model = model(PostModel::class);
@@ -33,3 +83,4 @@ class Post extends BaseController
 		return redirect()->back()->with('error', 'Ocorreu um erro ao deletar o post');
 	}
 }
+
