@@ -66,4 +66,9 @@ class User extends Model
 
 		return $data;
 	}
+
+	public function findByEmail(string $email)
+	{
+		return $this->where('email', $email)->first();
+	}
 }

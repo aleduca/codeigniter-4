@@ -25,7 +25,7 @@ class Auth extends BaseController
 		}
 
 		// check user
-		$user = model(User::class)->where('email', $data['email'])->first();
+		$user = model(User::class)->findByEmail($data['email']);
 
 		// check password
 		if (!$user || !password_verify($data['password'], $user->password)) {

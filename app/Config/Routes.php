@@ -4,17 +4,22 @@ use App\Controllers\Auth;
 use App\Controllers\Errors;
 use App\Controllers\Home;
 use App\Controllers\Post;
+use App\Controllers\PostHtmx;
 use App\Controllers\User;
 use CodeIgniter\Router\RouteCollection;
 
 /** @var RouteCollection $routes */
 
 $routes->get('/', [Home::class, 'index'], ['as' => 'home.index']);
-$routes->get('/posts', [Post::class, 'index'], ['as' => 'posts.index']);
-$routes->get('/posts/(:num)/quick-edit', [Post::class, 'quickEdit'], ['as' => 'posts.quick-edit']);
-$routes->get('/posts/(:num)/row', [Post::class, 'postRow'], ['as' => 'posts.row']);
-$routes->patch('/posts/(:num)/quick-edit', [Post::class, 'quickUpdate'], ['as' => 'posts.quick-update']);
-$routes->delete('/posts/(:num)', [Post::class, 'destroy'], ['as' => 'posts.delete']);
+
+$routes->group('posts', static function ($routes) {
+	$routes->get('/', [Post::class, 'index'], ['as' => 'posts.index']);
+	$routes->delete('(:num)', [Post::class, 'destroy'], ['as' => 'posts.delete']);
+	$routes->get('(:num)/quick-edit', [PostHtmx::class, 'quickEdit'], ['as' => 'posts.quick-edit']);
+	$routes->get('(:num)/row', [PostHtmx::class, 'postRow'], ['as' => 'posts.row']);
+	$routes->patch('(:num)/quick-edit', [PostHtmx::class, 'quickUpdate'], ['as' => 'posts.quick-update']);
+});
+
 $routes->get('/users', [User::class, 'index'], ['as' => 'users.index']);
 
 $routes->group('user', ['filter' => ['auth']], function ($routes) {
@@ -25,8 +30,10 @@ $routes->group('user', ['filter' => ['auth']], function ($routes) {
 	$routes->delete('(:num)', [User::class, 'destroy'], ['as' => 'users.delete']);
 });
 
-$routes->get('/login', [Auth::class, 'index'], ['as' => 'auth.index']);
-$routes->post('/login', [Auth::class, 'store'], ['as' => 'auth.store']);
-$routes->delete('/logout', [Auth::class, 'destroy'], ['as' => 'auth.delete', 'filter' => ['auth']]);
+$routes->group('', static function ($routes) {
+	$routes->get('/login', [Auth::class, 'index'], ['as' => 'auth.index']);
+	$routes->post('/login', [Auth::class, 'store'], ['as' => 'auth.store']);
+	$routes->delete('/logout', [Auth::class, 'destroy'], ['as' => 'auth.delete', 'filter' => ['auth']]);
+});
 
 $routes->set404Override(Errors::class . '::show404');

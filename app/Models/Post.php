@@ -49,4 +49,19 @@ class Post extends Model
 	protected $afterFind = [];
 	protected $beforeDelete = [];
 	protected $afterDelete = [];
+
+	public function getPostsWithAuthor(int $perPage = 10)
+	{
+		return $this->select('posts.*, users.firstName, users.lastName')
+			->join('users', 'users.id = posts.user_id', 'left')
+			->orderBy('posts.id', 'desc')
+			->paginate($perPage);
+	}
+
+	public function findWithAuthor(int $id)
+	{
+		return $this->select('posts.*, users.firstName, users.lastName')
+			->join('users', 'users.id = posts.user_id', 'left')
+			->find($id);
+	}
 }
