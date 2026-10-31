@@ -71,4 +71,9 @@ class User extends Model
 	{
 		return $this->where('email', $email)->first();
 	}
+
+	public function getPaginated(int $perPage = 5)
+	{
+		return $this->paginate($perPage);
+	}
 }

@@ -16,27 +16,8 @@ class User extends BaseController
 	{
 		$model = model(UserModel::class);
 
-		// Query Builder somente quando chamo o método table() - o db é a conexão - IMPORTANTE !!!
-		// try {
-		// 	$model->db->transException(true)->transBegin();
-
-		// 	$model->delete(1);
-
-		// 	$model->db->table('users')->update([
-		// 		'firstName' => 'João',
-		// 	], 'id=4');
-
-		// 	$model->db->transComplete();
-		// } catch (\Throwable $th) {
-		// 	throw $th;
-		// }
-
-		if ($model->db->transStatus() === false) {
-			log_message('info', 'Ocorreu um erro ao executar uma query na transaction');
-		}
-
 		$data = [
-			'users' => $model->paginate(5),
+			'users' => $model->getPaginated(5),
 			'pager' => $model->pager,
 		];
 
@@ -65,9 +46,10 @@ class User extends BaseController
 			/** @var DatabaseHandler $queue */
 			$queue = service('queue');
 			$queue->push('emails', 'email', ['user' => $data]);
-			redirect()->back()->with('success', 'Usuário cadastrado com sucesso');
+			return redirect()->back()->with('success', 'Usuário cadastrado com sucesso');
 		}
-		redirect()->back()->withInput()->with('error', 'Ocorreu um erro ao cadastrar o usuário');
+
+		return redirect()->back()->withInput()->with('error', 'Ocorreu um erro ao cadastrar o usuário');
 	}
 
 	public function edit(int $id)
@@ -103,16 +85,11 @@ class User extends BaseController
 	public function destroy(int $id)
 	{
 		$user = model(UserModel::class);
-		$session = session();
 
 		if ($user->delete($id)) {
-			$session->setFlashdata('success', 'Usuário deletado com sucesso');
-
-			return redirect()->back();
+			return redirect()->back()->with('success', 'Usuário deletado com sucesso');
 		}
 
-		$session->setFlashdata('error', 'Ocorreu um erro ao deletar o usuário');
-
-		return redirect()->back()->withInput();
+		return redirect()->back()->withInput()->with('error', 'Ocorreu um erro ao deletar o usuário');
 	}
 }

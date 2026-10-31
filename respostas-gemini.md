@@ -1,94 +1,183 @@
-Tudo implementado! Aqui está um resumo do que foi feito:
+Com base nas diretrizes de refatoração estabelecidas em `.agents/rules/refactor.md`, analisei **exclusivamente os arquivos do diretório `app/`** e elaborei o plano detalhado de refatoração abaixo.
+
+Nenhuma alteração foi realizada até o momento. Aguardo sua autorização para aplicar as mudanças.
 
 ---
 
-## ✅ O que foi feito
+### Diagnóstico da Análise
 
-### 📦 htmx instalado
-- `npm install htmx.org` — adicionado ao [`package.json`](file:///C:/dev/CI4/package.json)
-- Importado e exposto globalmente em [`src/index.js`](file:///C:/dev/CI4/src/index.js)
-- `npm run build` executado com sucesso
+1. **Agrupamento de Rotas ([`Routes.php`](file:///C:/dev/CI4/app/Config/Routes.php)):**
+   - As rotas de usuários estavam fragmentadas: a rota de listagem (`/users`) estava avulsa, enquanto as operações de mutação estavam em um grupo com prefixo no singular (`user`).
+   - As rotas de autenticação (`/login`, `/logout`) estavam soltas sem agrupamento de contexto.
+   - As rotas de Posts podem ter suas rotas HTMX organizadas de forma mais expressiva dentro do grupo `posts`.
 
-### 🔐 CSRF configurado para htmx
-- [`layout.php`](file:///C:/dev/CI4/app/Views/layout.php) recebeu `<?= csrf_meta() ?>` no `<head>`, gerando uma `<meta name="X-CSRF-TOKEN">` com o token atual
-- O `index.js` injeta automaticamente o token no header `X-CSRF-TOKEN` em **todas** as requisições htmx (`htmx:configRequest`)
-- Adicionado `PATCH` ao filtro CSRF em [`Filters.php`](file:///C:/dev/CI4/app/Config/Filters.php)
+2. **Centralização de Queries nos Models ([`User.php`](file:///C:/dev/CI4/app/Models/User.php) e [`User.php`](file:///C:/dev/CI4/app/Controllers/User.php)):**
+   - O controller [`User`](file:///C:/dev/CI4/app/Controllers/User.php#L39) executava a query `$model->paginate(5)` diretamente e mantinha trechos comentados de transação com uma verificação residual de status (`$model->db->transStatus()`).
+   - Será criado o método `getPaginated(int $perPage = 5)` no [`UserModel`](file:///C:/dev/CI4/app/Models/User.php), mantendo o controller chamando apenas o método do Model.
+   - Correção pontual de integridade no controller [`User::store()`](file:///C:/dev/CI4/app/Controllers/User.php#L68-L70), onde os redirecionamentos não possuíam a instrução `return`.
 
-### 🛣️ Rotas adicionadas ([`Routes.php`](file:///C:/dev/CI4/app/Config/Routes.php))
-| Método | Rota | Função |
-|--------|------|--------|
-| `GET` | `/posts/{id}/quick-edit` | Retorna o formulário inline |
-| `GET` | `/posts/{id}/row` | Retorna a linha normal (cancelar) |
-| `PATCH` | `/posts/{id}/quick-edit` | Salva e retorna a linha atualizada |
+3. **Métodos HTMX ([`PostHtmx.php`](file:///C:/dev/CI4/app/Controllers/PostHtmx.php)):**
+   - Os métodos relacionados a HTMX (`quickEdit`, `postRow`, `quickUpdate`) já se encontram isolados em um controller exclusivo ([`PostHtmx`](file:///C:/dev/CI4/app/Controllers/PostHtmx.php)). Essa separação será mantida e refletida claramente no mapeamento de rotas.
 
-### 🎨 Views criadas
-- [`posts/partials/post_row.php`](file:///C:/dev/CI4/app/Views/posts/partials/post_row.php) — linha normal com o botão **Edição Rápida** (indigo-700) e botão Deletar
-- [`posts/partials/quick_edit_form.php`](file:///C:/dev/CI4/app/Views/posts/partials/quick_edit_form.php) — formulário inline com `input` para título, `textarea` para conteúdo, botões **Salvar** e **Cancelar**
-- [`posts/index.php`](file:///C:/dev/CI4/app/Views/posts/index.php) — refatorado para usar `$this->include('posts/partials/post_row')`
+---
 
-### 🧩 Controller ([`Post.php`](file:///C:/dev/CI4/app/Controllers/Post.php))
-- `quickEdit()` — retorna o formulário parcial
-- `postRow()` — retorna a linha normal (usado pelo Cancelar)
-- `quickUpdate()` — salva e retorna a linha atualizada com os novos dados
+### Proposta de Diffs
 
+#### 1. [`app/Config/Routes.php`](file:///C:/dev/CI4/app/Config/Routes.php)
 
+```diff
+--- a/app/Config/Routes.php
++++ b/app/Config/Routes.php
+@@ -10,28 +10,34 @@
 
+ /** @var RouteCollection $routes */
 
-Pronto! A alteração foi feita na linha 37 do [index.php](file:///C:/dev/CI4/app/Views/posts/index.php#L36-L38).
++// Home
+ $routes->get('/', [Home::class, 'index'], ['as' => 'home.index']);
 
-**O problema:** O `$this->include()` do CI4, quando usado dentro de uma seção (`$this->section()`), não repassa corretamente variáveis locais criadas dentro de um `foreach` para a view incluída, mesmo passando o array como segundo argumento.
++// Posts e HTMX
+ $routes->group('posts', static function ($routes) {
+ 	$routes->get('/', [Post::class, 'index'], ['as' => 'posts.index']);
+ 	$routes->delete('(:num)', [Post::class, 'destroy'], ['as' => 'posts.delete']);
+-	$routes->get('(:num)/quick-edit', [PostHtmx::class, 'quickEdit'], ['as' => 'posts.quick-edit']);
+-	$routes->get('(:num)/row', [PostHtmx::class, 'postRow'], ['as' => 'posts.row']);
+-	$routes->patch('(:num)/quick-edit', [PostHtmx::class, 'quickUpdate'], ['as' => 'posts.quick-update']);
++
++	// Rotas exclusivas HTMX
++	$routes->group('', static function ($routes) {
++		$routes->get('(:num)/quick-edit', [PostHtmx::class, 'quickEdit'], ['as' => 'posts.quick-edit']);
++		$routes->get('(:num)/row', [PostHtmx::class, 'postRow'], ['as' => 'posts.row']);
++		$routes->patch('(:num)/quick-edit', [PostHtmx::class, 'quickUpdate'], ['as' => 'posts.quick-update']);
++	});
+ });
 
-**A solução:** Substituir por `view()` — o helper nativo do CI4 que injeta o array de dados diretamente no escopo da view parcial, garantindo que `$post` esteja disponível no [post_row.php](file:///C:/dev/CI4/app/Views/posts/partials/post_row.php).
+-$routes->get('/users', [User::class, 'index'], ['as' => 'users.index']);
+-
+-$routes->group('user', ['filter' => ['auth']], function ($routes) {
+-	$routes->post('/', [User::class, 'store'], ['as' => 'users.store']);
+-	$routes->get('create', [User::class, 'create'], ['as' => 'users.create']);
+-	$routes->get('edit/(:num)', [User::class, 'edit'], ['as' => 'users.edit']);
+-	$routes->put('(:num)', [User::class, 'update'], ['as' => 'users.update']);
+-	$routes->delete('(:num)', [User::class, 'destroy'], ['as' => 'users.delete']);
++// Usuários
++$routes->group('users', static function ($routes) {
++	$routes->get('/', [User::class, 'index'], ['as' => 'users.index']);
++
++	$routes->group('', ['filter' => ['auth']], static function ($routes) {
++		$routes->get('create', [User::class, 'create'], ['as' => 'users.create']);
++		$routes->post('/', [User::class, 'store'], ['as' => 'users.store']);
++		$routes->get('edit/(:num)', [User::class, 'edit'], ['as' => 'users.edit']);
++		$routes->put('(:num)', [User::class, 'update'], ['as' => 'users.update']);
++		$routes->delete('(:num)', [User::class, 'destroy'], ['as' => 'users.delete']);
++	});
+ });
 
+-$routes->get('/login', [Auth::class, 'index'], ['as' => 'auth.index']);
+-$routes->post('/login', [Auth::class, 'store'], ['as' => 'auth.store']);
+-$routes->delete('/logout', [Auth::class, 'destroy'], ['as' => 'auth.delete', 'filter' => ['auth']]);
++// Autenticação
++$routes->group('', static function ($routes) {
++	$routes->get('login', [Auth::class, 'index'], ['as' => 'auth.index']);
++	$routes->post('login', [Auth::class, 'store'], ['as' => 'auth.store']);
++	$routes->delete('logout', [Auth::class, 'destroy'], ['as' => 'auth.delete', 'filter' => ['auth']]);
++});
 
-
-
-Resolvido! **A causa do bug:**
-
-- O HTMX com `hx-patch` envia a requisição usando o método HTTP **PATCH**, não **POST**.
-- `$this->request->getPost()` no CI4 **só lê dados de requisições POST**. Para PATCH, os dados chegam no corpo raw e retornavam `null`.
-
-**A correção:** Trocado para `$this->request->getVar()` no [`Post.php`](file:///C:/dev/CI4/app/Controllers/Post.php#L60-L63), que lê dados de qualquer método HTTP (GET, POST, PUT, PATCH, DELETE), independente de como foram enviados.
-
-
-
-
-Build concluído. O problema estava no seletor do querySelector no [`src/index.js`](file:///C:/dev/CI4/src/index.js).
-
-**O que estava errado:**
-
-O `csrf_meta()` do CI4 gera a meta tag usando o nome definido em `Security.php`:
-```html
-<meta name="csrf_test_name" content="TOKEN_VALOR">
+ $routes->set404Override(Errors::class . '::show404');
 ```
 
-Mas o JS estava buscando por `meta[name="X-CSRF-TOKEN"]` — esse `name` não existe no DOM, então `meta` era `null` e o header CSRF nunca era enviado. Sem o token, o filtro CSRF do CI4 bloqueava a requisição PATCH e descartava o body, resultando em `title` e `content` vazios.
+---
 
-**A correção:** O seletor foi corrigido para `meta[name="csrf_test_name"]`, que é o nome real da meta tag gerada pelo CI4.
+#### 2. [`app/Models/User.php`](file:///C:/dev/CI4/app/Models/User.php)
 
-
-Resolvido corretamente agora. Veja o resumo do que estava errado:
+```diff
+--- a/app/Models/User.php
++++ b/app/Models/User.php
+@@ -71,4 +71,9 @@
+ 	public function findByEmail(string $email)
+ 	{
+ 		return $this->where('email', $email)->first();
+ 	}
++
++	public function getPaginated(int $perPage = 5)
++	{
++		return $this->paginate($perPage);
++	}
+ }
+```
 
 ---
 
-**Causa raiz do problema:**
+#### 3. [`app/Controllers/User.php`](file:///C:/dev/CI4/app/Controllers/User.php)
 
-O CI4 tem métodos distintos para ler o body dependendo do método HTTP:
+```diff
+--- a/app/Controllers/User.php
++++ b/app/Controllers/User.php
+@@ -18,29 +18,10 @@
+ 	public function index()
+ 	{
+ 		$model = model(UserModel::class);
 
-| Método | Como ler dados do body |
-|---|---|
-| `POST` | `getPost()` ou `getVar()` |
-| `PUT` / `PATCH` / `DELETE` | **`getRawInputVar()`** |
+-		// Query Builder somente quando chamo o método table() - o db é a conexão - IMPORTANTE !!!
+-		// try {
+-		// 	$model->db->transException(true)->transBegin();
+-
+-		// 	$model->delete(1);
+-
+-		// 	$model->db->table('users')->update([
+-		// 		'firstName' => 'João',
+-		// 	], 'id=4');
+-
+-		// 	$model->db->transComplete();
+-		// } catch (\Throwable $th) {
+-		// 	throw $th;
+-		// }
+-
+-		if ($model->db->transStatus() === false) {
+-			log_message('info', 'Ocorreu um erro ao executar uma query na transaction');
+-		}
+-
+ 		$data = [
+-			'users' => $model->paginate(5),
++			'users' => $model->getPaginated(5),
+ 			'pager' => $model->pager,
+ 		];
 
-O `getVar()` internamente usa `fetchGlobal('request', ...)` que mapeia para `$_REQUEST` — que o PHP **não popula automaticamente** para métodos PATCH. Já o `getRawInputVar()` faz `parse_str($this->body)` diretamente no body cru da requisição, que é exatamente o que o HTMX envia.
+ 		return view('users/index', $data);
+@@ -65,9 +46,10 @@
+ 		if ($inserted) {
+ 			/** @var DatabaseHandler $queue */
+ 			$queue = service('queue');
+ 			$queue->push('emails', 'email', ['user' => $data]);
+-			redirect()->back()->with('success', 'Usuário cadastrado com sucesso');
++			return redirect()->back()->with('success', 'Usuário cadastrado com sucesso');
+ 		}
+-		redirect()->back()->withInput()->with('error', 'Ocorreu um erro ao cadastrar o usuário');
++
++		return redirect()->back()->withInput()->with('error', 'Ocorreu um erro ao cadastrar o usuário');
+ 	}
 
-O [`Post.php`](file:///C:/dev/CI4/app/Controllers/Post.php#L60-L63) agora usa `getRawInputVar()` corretamente.
+ 	public function edit(int $id)
+@@ -103,15 +85,10 @@
+ 	public function destroy(int $id)
+ 	{
+ 		$user = model(UserModel::class);
+-		$session = session();
 
+ 		if ($user->delete($id)) {
+-			$session->setFlashdata('success', 'Usuário deletado com sucesso');
+-
+-			return redirect()->back();
++			return redirect()->back()->with('success', 'Usuário deletado com sucesso');
+ 		}
 
-Pronto! A alteração foi feita em [`Security.php`](file:///C:/dev/CI4/app/Config/Security.php#L74).
+-		$session->setFlashdata('error', 'Ocorreu um erro ao deletar o usuário');
+-
+-		return redirect()->back()->withInput();
++		return redirect()->back()->withInput()->with('error', 'Ocorreu um erro ao deletar o usuário');
+ 	}
+ }
+```
 
-**Por que `regenerate = false` é seguro aqui:**
+---
 
-- Com `regenerate = true`, o token muda após cada request — feito para formulários HTML tradicionais onde a página é recarregada (e assim recebe o novo token).
-- Com HTMX/AJAX, **a página não recarrega**, então o token antigo na meta tag fica inválido imediatamente após o primeiro envio.
-- Com `regenerate = false`, o token permanece válido durante toda a sessão do usuário — o que ainda protege completamente contra CSRF, pois o atacante continua sem ter acesso ao token.
+Deseja autorizar a aplicação dessas alterações? Se preferir algum ajuste antes de prosseguir, basta indicar.
