@@ -24,10 +24,9 @@ class Post extends BaseController
 		$model = model(PostModel::class);
 
 		if ($model->delete($id)) {
-			return redirect()->back()->with('success', 'Post deletado com sucesso');
+			return redirect()->route('posts.index')->with('success', 'Post deletado com sucesso');
 		}
 
-		return redirect()->back()->with('error', 'Ocorreu um erro ao deletar o post');
+		return redirect()->route('posts.index')->with('error', 'Ocorreu um erro ao deletar o post');
 	}
 }
-

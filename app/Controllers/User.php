@@ -17,7 +17,7 @@ class User extends BaseController
 		$model = model(UserModel::class);
 
 		$data = [
-			'users' => $model->getPaginated(5),
+			'users' => $model->paginate(5),
 			'pager' => $model->pager,
 		];
 
@@ -46,6 +46,7 @@ class User extends BaseController
 			/** @var DatabaseHandler $queue */
 			$queue = service('queue');
 			$queue->push('emails', 'email', ['user' => $data]);
+
 			return redirect()->back()->with('success', 'Usuário cadastrado com sucesso');
 		}
 
